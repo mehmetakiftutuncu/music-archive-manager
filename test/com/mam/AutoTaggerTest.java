@@ -1,13 +1,13 @@
 package com.mam;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
 import org.junit.Test;
 
 import com.mam.controller.AutoTagger;
-import com.mam.controller.FileUtils;
 import com.mam.model.SongTags;
 
 public class AutoTaggerTest
@@ -19,21 +19,9 @@ public class AutoTaggerTest
 	}
 	
 	@Test
-	public void testGetSubDirectories()
-	{
-		assertNotNull(FileUtils.getSubDirectories(new File("testingSet")));
-	}
-	
-	@Test
-	public void testGetFilesInDirectory()
-	{
-		assertNotNull(FileUtils.getFilesInDirectory(new File("testingSet/Teoman/Gönülçelen")));
-	}
-	
-	@Test
 	public void testTagSong()
 	{
 		assertTrue(new AutoTagger("").tagSong(	new File("testingSet/Teoman/Gönülçelen/Teoman - Gönülçelen.mp3"),
-												new SongTags("artist", "title", "album")));
+												new SongTags("artist", "album", "title")));
 	}
 }
