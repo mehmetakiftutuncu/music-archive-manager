@@ -1,7 +1,6 @@
 package com.mam.controller;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import org.blinkenlights.jid3.MP3File;
 import org.blinkenlights.jid3.MediaFile;
@@ -16,11 +15,8 @@ import com.mam.model.SongTags;
  * @author Mehmet Akif Tutuncu
  * @author Rhahadian Bima Saputra
  */
-public class AutoTagger
+public class AutoTagger extends Automizer
 {
-	/**	The root directory of the music archive */
-	private String myArchiveDirectory;
-	
 	/**
 	 * Instantiates an AutoTagger object
 	 * 
@@ -28,7 +24,7 @@ public class AutoTagger
 	 */
 	public AutoTagger(String archiveDirectory)
 	{
-		myArchiveDirectory = archiveDirectory;
+		super(archiveDirectory);
 	}
 	
 	/**
@@ -97,61 +93,6 @@ public class AutoTagger
 	}
 	
 	/**
-	 * Gets the list of sub directories of the given directory
-	 *   
-	 * @param root Directory from which the sub directories will be found
-	 * 
-	 * @return The list of sub directories of the given directory
-	 */
-	public ArrayList<File> getSubDirectories(File root)
-	{
-		ArrayList<File> subDirectories = null;
-		
-		if(root.isDirectory())
-		{
-			subDirectories = new ArrayList<File>();
-			for(File file : root.listFiles())
-			{
-				if(file.isDirectory())
-				{
-					subDirectories.add(file);
-		        }
-		    }
-		}
-		
-		return subDirectories;
-	}
-	
-	/**
-	 * Gets the list of .mp3 files in the given directory
-	 *   
-	 * @param root Directory from which the files will be found
-	 * 
-	 * @return The list of all .mp3 files in the given directory
-	 */
-	public ArrayList<File> getFilesInDirectory(File root)
-	{
-		ArrayList<File> files = null;
-		
-		if(root.isDirectory())
-		{
-			files = new ArrayList<File>();
-			for(File file : root.listFiles())
-			{
-				if(!file.isDirectory())
-				{
-					if(file.getName().endsWith(".mp3") || file.getName().endsWith(".MP3"))
-					{
-						files.add(file);
-					}
-		        }
-		    }
-		}
-		
-		return files;
-	}
-	
-	/**
 	 * Updates tags of a song
 	 * 
 	 * @param song File object representing the song
@@ -186,33 +127,22 @@ public class AutoTagger
 			return false;
 		}
 	}
-	
-	/**
-	 * Runs the auto-tagging process
-	 */
-	public void run()
+
+	@Override
+	public void process(File currentArtist, File currentAlbum, File currentSong)
 	{
-		for(File currentArtist : getSubDirectories(new File(myArchiveDirectory)))
-		{
-			for(File currentAlbum : getSubDirectories(currentArtist))
-			{
-				for(File currentSong : getFilesInDirectory(currentAlbum))
-				{
-					SongTags tags = new SongTags(	currentArtist.getName(),
-													extractTitleFromFileName(currentSong.getName(), "\\-", 1),
-													currentAlbum.getName());
-					
-					System.out.println("===== UPDATING TAG =====");
-					System.out.println("File\t\t: "  + currentSong.getAbsolutePath());
-					System.out.print("Tags");
-					System.out.println("\tArtist\t: " + tags.getArtist());
-					System.out.println("\tTitle\t: " + tags.getTitle());
-					System.out.println("\tAlbum\t: " + tags.getAlbum());
-					System.out.println();
-					
-					tagSong(currentSong, tags);
-				}
-			}
-		}
+		SongTags tags = new SongTags(	currentArtist.getName(),
+										extractTitleFromFileName(currentSong.getName(), "\\-", 1),
+										currentAlbum.getName());
+
+		System.out.println("===== UPDATING TAG =====");
+		System.out.println("File\t\t: "  + currentSong.getAbsolutePath());
+		System.out.print("Tags");
+		System.out.println("\tArtist\t: " + tags.getArtist());
+		System.out.println("\tTitle\t: " + tags.getTitle());
+		System.out.println("\tAlbum\t: " + tags.getAlbum());
+		System.out.println();
+		
+		tagSong(currentSong, tags);
 	}
 }

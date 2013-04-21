@@ -7,6 +7,7 @@ import java.io.File;
 import org.junit.Test;
 
 import com.mam.controller.AutoTagger;
+import com.mam.controller.FileUtils;
 import com.mam.model.SongTags;
 
 public class AutoTaggerTest
@@ -20,13 +21,13 @@ public class AutoTaggerTest
 	@Test
 	public void testGetSubDirectories()
 	{
-		assertNotNull(new AutoTagger("testingSet").getSubDirectories(new File("testingSet")));
+		assertNotNull(FileUtils.getSubDirectories(new File("testingSet")));
 	}
 	
 	@Test
 	public void testGetFilesInDirectory()
 	{
-		assertNotNull(new AutoTagger("testingSet").getFilesInDirectory(new File("testingSet/Teoman/Gönülçelen")));
+		assertNotNull(FileUtils.getFilesInDirectory(new File("testingSet/Teoman/Gönülçelen")));
 	}
 	
 	@Test
