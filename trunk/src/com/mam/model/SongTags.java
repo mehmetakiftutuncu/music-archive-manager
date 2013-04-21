@@ -11,23 +11,23 @@ public class SongTags
 {
 	/** Artist of the song */
 	private String artist;
-	/** Title of the song */
-	private String title;
 	/** Album of the song */
 	private String album;
+	/** Title of the song */
+	private String title;
 	
 	/**
 	 * Instantiates a SongTags object
 	 * 
 	 * @param artist Artist of the song
-	 * @param title Title of the song
 	 * @param album Album of the song
+	 * @param title Title of the song
 	 */
-	public SongTags(String artist, String title, String album)
+	public SongTags(String artist, String album, String title)
 	{
 		setArtist(artist);
-		setTitle(title);
 		setAlbum(album);
+		setTitle(title);
 	}
 	
 	/**
@@ -51,26 +51,6 @@ public class SongTags
 	}
 	
 	/**
-	 * Gets the title of the song
-	 * 
-	 * @return The title of the song
-	 */
-	public String getTitle()
-	{
-		return title;
-	}
-	
-	/**
-	 * Sets the title of the song
-	 * 
-	 * @param title New title
-	 */
-	public void setTitle(String title)
-	{
-		this.title = title;
-	}
-	
-	/**
 	 * Gets the album of the song
 	 * 
 	 * @return The album of the song
@@ -88,6 +68,26 @@ public class SongTags
 	public void setAlbum(String album)
 	{
 		this.album = album;
+	}
+	
+	/**
+	 * Gets the title of the song
+	 * 
+	 * @return The title of the song
+	 */
+	public String getTitle()
+	{
+		return title;
+	}
+	
+	/**
+	 * Sets the title of the song
+	 * 
+	 * @param title New title
+	 */
+	public void setTitle(String title)
+	{
+		this.title = title;
 	}
 	
 	@Override

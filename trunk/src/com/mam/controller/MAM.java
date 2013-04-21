@@ -18,4 +18,14 @@ public class MAM
 	{
 		new AutoTagger(musicArchive).run();
 	}
+	
+	/**
+	 * Performs auto-naming on the given music archive directory
+	 * 
+	 * @param musicArchive Path of the music archive directory
+	 */
+	public void autoName(String musicArchive)
+	{
+		new AutoNamer(musicArchive).run();
+	}
 }

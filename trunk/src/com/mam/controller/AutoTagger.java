@@ -132,15 +132,15 @@ public class AutoTagger extends Automizer
 	public void process(File currentArtist, File currentAlbum, File currentSong)
 	{
 		SongTags tags = new SongTags(	currentArtist.getName(),
-										extractTitleFromFileName(currentSong.getName(), "\\-", 1),
-										currentAlbum.getName());
+										currentAlbum.getName(),
+										extractTitleFromFileName(currentSong.getName(), "\\-", 1));
 
 		System.out.println("===== UPDATING TAG =====");
 		System.out.println("File\t\t: "  + currentSong.getAbsolutePath());
 		System.out.print("Tags");
 		System.out.println("\tArtist\t: " + tags.getArtist());
-		System.out.println("\tTitle\t: " + tags.getTitle());
 		System.out.println("\tAlbum\t: " + tags.getAlbum());
+		System.out.println("\tTitle\t: " + tags.getTitle());
 		System.out.println();
 		
 		tagSong(currentSong, tags);
