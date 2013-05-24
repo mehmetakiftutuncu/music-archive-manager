@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 
 import com.mam.utilities.FileUtils;
 
@@ -22,15 +23,21 @@ public abstract class Automizer
 	/**	The progress bar in the main frame */
 	protected JProgressBar myProgressBar;
 	
+	/** Text area for the logging in the main frame */
+	protected JTextArea myOutputLog;
+	
 	/**
 	 * Instantiates an Automizer object
 	 * 
 	 * @param archiveDirectory The root directory of the music archive
+	 * @param progressBar The progress bar in the main frame
+	 * @param outputLog Text area for the logging in the main frame
 	 */
-	protected Automizer(String archiveDirectory, JProgressBar progressBar)
+	protected Automizer(String archiveDirectory, JProgressBar progressBar, JTextArea outputLog)
 	{
 		myArchiveDirectory = archiveDirectory;
 		myProgressBar = progressBar;
+		myOutputLog = outputLog;
 	}
 	
 	/**
@@ -47,46 +54,97 @@ public abstract class Automizer
 	 */
 	public void run()
 	{
-		ArrayList<File> artistFolders = FileUtils.getSubDirectories(new File(myArchiveDirectory));
-		
-		// If there are artist folders
-		if(artistFolders.size() > 0)
+		new Thread(new Runnable()
 		{
-			// For every artist
-			for(File currentArtist : artistFolders)
+			@Override
+			public void run()
 			{
-				ArrayList<File> albumFolders = FileUtils.getSubDirectories(currentArtist);
+				myProgressBar.setMaximum(countFiles(new File(myArchiveDirectory)));
 				
-				// If there are album folders
-				if(albumFolders.size() > 0)
+				ArrayList<File> artistFolders = FileUtils.getSubDirectories(new File(myArchiveDirectory));
+				
+				// If there are artist folders
+				if(artistFolders.size() > 0)
 				{
-					// For each album
-					for(File currentAlbum : albumFolders)
+					// For every artist
+					for(File currentArtist : artistFolders)
 					{
-						// For each file
-						for(File currentSong : FileUtils.getFilesInDirectory(currentAlbum))
+						ArrayList<File> albumFolders = FileUtils.getSubDirectories(currentArtist);
+						
+						// If there are album folders
+						if(albumFolders.size() > 0)
 						{
-							process(currentArtist, currentAlbum, currentSong);
+							// For each album
+							for(File currentAlbum : albumFolders)
+							{
+								// For each file
+								for(File currentSong : FileUtils.getFilesInDirectory(currentAlbum))
+								{
+									process(currentArtist, currentAlbum, currentSong);
+								}
+							}
+						}
+						else
+						{
+							// For each file
+							for(File currentSong : FileUtils.getFilesInDirectory(currentArtist))
+							{
+								process(currentArtist, null, currentSong);
+							}
 						}
 					}
 				}
 				else
 				{
 					// For each file
-					for(File currentSong : FileUtils.getFilesInDirectory(currentArtist))
+					for(File currentSong : FileUtils.getFilesInDirectory(new File(myArchiveDirectory)))
 					{
-						process(currentArtist, null, currentSong);
+						process(null, null, currentSong);
 					}
 				}
 			}
-		}
-		else
-		{
-			// For each file
-			for(File currentSong : FileUtils.getFilesInDirectory(new File(myArchiveDirectory)))
-			{
-				process(null, null, currentSong);
-			}
-		}
+		}).start();
 	}
+	
+	/**
+	 * Adds one line to the output log
+	 * 
+	 * @param message Message to log
+	 */
+	public void log(String message)
+	{
+		myOutputLog.append(message + "\n");
+		System.out.println(message);
+		myOutputLog.setCaretPosition(myOutputLog.getText().length());
+	}
+	
+	/**
+	 * Counts mp3 files in a directory recursively
+	 * 
+	 * @param folder Current folder
+	 * 
+	 * @return Total number of mp3 files in the given directory
+	 */
+	public int countFiles(File folder)
+	{
+		int count = 0;
+		
+        File[] files = folder.listFiles();
+        for(File file: files)
+        {
+            if(file.isFile())
+            {
+            	if(file.getName().endsWith(".mp3") || file.getName().endsWith(".MP3"))
+            	{
+            		count++;
+            	}
+            }
+            else
+            {
+                count += countFiles(file);
+            }
+        }
+
+        return count;
+    }
 }

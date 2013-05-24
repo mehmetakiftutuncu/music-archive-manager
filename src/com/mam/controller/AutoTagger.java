@@ -3,6 +3,7 @@ package com.mam.controller;
 import java.io.File;
 
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 
 import com.mam.model.SongTags;
 import com.mam.utilities.StringUtils;
@@ -21,10 +22,12 @@ public class AutoTagger extends Automizer
 	 * Instantiates an AutoTagger object
 	 * 
 	 * @param archiveDirectory The root directory of the music archive
+	 * @param progressBar The progress bar in the main frame
+	 * @param outputLog Text area for the logging in the main frame
 	 */
-	public AutoTagger(String archiveDirectory, JProgressBar progressBar)
+	public AutoTagger(String archiveDirectory, JProgressBar progressBar, JTextArea outputLog)
 	{
-		super(archiveDirectory, progressBar);
+		super(archiveDirectory, progressBar, outputLog);
 	}
 
 	@Override
@@ -34,14 +37,16 @@ public class AutoTagger extends Automizer
 										currentAlbum != null ? currentAlbum.getName() : "",
 										StringUtils.extractTitleFromFileName(currentSong != null ? currentSong.getName() : "", "\\-", 1));
 
-		System.out.println("===== UPDATING TAG =====");
-		System.out.println("File\t\t: "  + currentSong.getAbsolutePath());
-		System.out.print("Tags");
-		System.out.println("\tArtist\t: " + tags.getArtist());
-		System.out.println("\tAlbum\t: " + tags.getAlbum());
-		System.out.println("\tTitle\t: " + tags.getTitle());
-		System.out.println();
+		log("===== UPDATING TAG =====");
+		log("File\t\t: "  + currentSong.getAbsolutePath());
+		log("Tags");
+		log("\tArtist\t: " + tags.getArtist());
+		log("\tAlbum\t: " + tags.getAlbum());
+		log("\tTitle\t: " + tags.getTitle());
+		log("");
 		
 		TagUtils.tagSong(currentSong, tags);
+		
+		myProgressBar.setValue(myProgressBar.getValue() + 1);
 	}
 }

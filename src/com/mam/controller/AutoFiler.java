@@ -3,6 +3,7 @@ package com.mam.controller;
 import java.io.File;
 
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 
 import com.mam.model.SongTags;
 import com.mam.utilities.FileUtils;
@@ -22,10 +23,12 @@ public class AutoFiler extends Automizer
 	 * Instantiates an AutoFiler object
 	 * 
 	 * @param archiveDirectory The root directory of the music archive
+	 * @param progressBar The progress bar in the main frame
+	 * @param outputLog Text area for the logging in the main frame
 	 */
-	public AutoFiler(String archiveDirectory, JProgressBar progressBar)
+	public AutoFiler(String archiveDirectory, JProgressBar progressBar, JTextArea outputLog)
 	{
-		super(archiveDirectory, progressBar);
+		super(archiveDirectory, progressBar, outputLog);
 	}
 	
 	/**
@@ -75,18 +78,20 @@ public class AutoFiler extends Automizer
 	{
 		SongTags tags = TagUtils.readTags(currentSong);
 		
-		System.out.println("===== RELOCATING FILE =====");
-		System.out.println("Before\t\t: "  + currentSong.getAbsolutePath());
-		System.out.print("Tags");
-		System.out.println("\tArtist\t: " + tags.getArtist());
-		System.out.println("\tAlbum\t: " + tags.getAlbum());
-		System.out.println("\tTitle\t: " + tags.getTitle());
+		log("===== RELOCATING FILE =====");
+		log("Before\t\t: "  + currentSong.getAbsolutePath());
+		log("Tags");
+		log("\tArtist\t: " + tags.getArtist());
+		log("\tAlbum\t: " + tags.getAlbum());
+		log("\tTitle\t: " + tags.getTitle());
 		
 		File newFile = relocateFile(currentSong, tags);
 		if(newFile != null)
 		{
-			System.out.println("After\t\t: "  + newFile.getAbsolutePath());
+			log("After\t\t: "  + newFile.getAbsolutePath());
 		}
-		System.out.println();
+		log("");
+		
+		myProgressBar.setValue(myProgressBar.getValue() + 1);
 	}
 }
