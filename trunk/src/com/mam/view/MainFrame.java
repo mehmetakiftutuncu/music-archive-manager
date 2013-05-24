@@ -101,19 +101,40 @@ public class MainFrame extends JFrame
 		
 		JPanel autoTagPanel = new JPanel();
 		tabbedPane.addTab("Auto Tag", null, autoTagPanel, null);
+		autoTagPanel.setLayout(new BorderLayout(0, 0));
+		
+		JLabel infoAutoTag = new JLabel("<html>\r\n<p>Auto Tag lets you update ID3 tags of your music files based on where they are located and their names.</p>\r\n<br>\r\n<p>Auto Tag will assume that:\r\n<ul>\r\n<li>Folders inside the selected music archive are named as the <strong>Artist/Band Name</strong>.</li>\r\n<li>Folders inside each artist folder are named as the <strong>Album Name</strong>. If there is no folder inside the artist folder, album name will be considered as <strong>Unknown</strong>.</li>\r\n<li>Files with <strong>.mp3</strong> extension have names with <strong>&lt;Artist Name&gt; - &lt;Title&gt;.mp3</strong> format.</li>\r\n<ul>\r\n</html>");
+		infoAutoTag.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JScrollPane autoTagScrollPane = new JScrollPane(infoAutoTag);
+		autoTagPanel.add(autoTagScrollPane, BorderLayout.CENTER);
 		
 		JPanel autoNamePanel = new JPanel();
 		tabbedPane.addTab("Auto Name", null, autoNamePanel, null);
+		autoNamePanel.setLayout(new BorderLayout(0, 0));
+		
+		JLabel infoAutoName = new JLabel("<html>\r\n<p>Auto Name lets you rename your music files based on their ID3 tags and where they are located.</p>\r\n<br>\r\n<p>Auto Name will assume that:\r\n<ul>\r\n<li>Folders inside the selected music archive are named as the <strong>Artist/Band Name</strong>.</li>\r\n<li>Folders inside each artist folder are named as the <strong>Album Name</strong>. If there is no folder inside the artist folder, album name will be considered as <strong>Unknown</strong>.</li>\r\n<li>ID3 tags have priority over the derived information from the file location that is, if the file has ID3 tags, those will be used to rename the file first.</li>\r\n<ul>\r\n</html>");
+		infoAutoName.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JScrollPane autoNameScrollPane = new JScrollPane(infoAutoName);
+		autoNamePanel.add(autoNameScrollPane, BorderLayout.CENTER);
 		
 		JPanel autoFilePanel = new JPanel();
 		tabbedPane.addTab("Auto File", null, autoFilePanel, null);
+		autoFilePanel.setLayout(new BorderLayout(0, 0));
+		
+		JLabel infoAutoFile = new JLabel("<html>\r\n<p>Auto File lets you relocate your music files into organized folders based on their ID3 tags and their file names.</p>\r\n<br>\r\n<p>Auto File will assume that:\r\n<ul>\r\n<li>ID3 tags have priority over the derived information from the file name that is, if the file has ID3 tags, those will be used to locate the file first.</li>\r\n</ul><p>\r\n<br>\r\n<p>The new organization of the folders will be as following:\r\n<ul>\r\n<li>Folders, named as artist name information from ID3 tags (or derived from file name if there is no ID3 tag), inside the selected music archive</li>\r\n<li>Folders, named as album name information from ID3 tags (or considered as unknown) inside each artist folder</li>\r\n<li>Music files inside each album folder</li>\r\n<ul>\r\n</html>");
+		infoAutoFile.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JScrollPane autoFileScrollPane = new JScrollPane(infoAutoFile);
+		autoFilePanel.add(autoFileScrollPane, BorderLayout.CENTER);
 		
 		final JTextArea outputLog = new JTextArea();
 		outputLog.setRows(10);
 		outputLog.setEditable(false);
 		
-		JScrollPane scrollPane = new JScrollPane(outputLog);
-		centerPanel.add(scrollPane, BorderLayout.SOUTH);
+		JScrollPane logScrollPane = new JScrollPane(outputLog);
+		centerPanel.add(logScrollPane, BorderLayout.SOUTH);
 		
 		JPanel bottomPanel = new JPanel();
 		contentPane.add(bottomPanel, BorderLayout.SOUTH);
