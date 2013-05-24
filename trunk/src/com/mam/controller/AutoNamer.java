@@ -3,6 +3,7 @@ package com.mam.controller;
 import java.io.File;
 
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 
 import com.mam.model.SongTags;
 import com.mam.utilities.FileUtils;
@@ -21,10 +22,12 @@ public class AutoNamer extends Automizer
 	 * Instantiates an AutoNamer object
 	 * 
 	 * @param archiveDirectory The root directory of the music archive
+	 * @param progressBar The progress bar in the main frame
+	 * @param outputLog Text area for the logging in the main frame
 	 */
-	public AutoNamer(String archiveDirectory, JProgressBar progressBar)
+	public AutoNamer(String archiveDirectory, JProgressBar progressBar, JTextArea outputLog)
 	{
-		super(archiveDirectory, progressBar);
+		super(archiveDirectory, progressBar, outputLog);
 	}
 	
 	@Override
@@ -32,16 +35,18 @@ public class AutoNamer extends Automizer
 	{
 		SongTags tags = TagUtils.readTags(currentSong);
 		
-		System.out.println("===== UPDATING FILE NAME =====");
-		System.out.println("Before\t\t: "  + currentSong.getAbsolutePath());
-		System.out.print("Tags");
-		System.out.println("\tArtist\t: " + tags.getArtist());
-		System.out.println("\tAlbum\t: " + tags.getAlbum());
-		System.out.println("\tTitle\t: " + tags.getTitle());
+		log("===== UPDATING FILE NAME =====");
+		log("Before\t\t: "  + currentSong.getAbsolutePath());
+		log("Tags");
+		log("\tArtist\t: " + tags.getArtist());
+		log("\tAlbum\t: " + tags.getAlbum());
+		log("\tTitle\t: " + tags.getTitle());
 		
 		currentSong = FileUtils.updateFileName(currentSong, tags, currentArtist, currentAlbum);
 		
-		System.out.println("After\t\t: "  + currentSong.getAbsolutePath());
-		System.out.println();
+		log("After\t\t: "  + currentSong.getAbsolutePath());
+		log("");
+		
+		myProgressBar.setValue(myProgressBar.getValue() + 1);
 	}
 }

@@ -21,6 +21,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.mam.controller.MAM;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame
@@ -106,11 +108,19 @@ public class MainFrame extends JFrame
 		JPanel autoFilePanel = new JPanel();
 		tabbedPane.addTab("Auto File", null, autoFilePanel, null);
 		
+		final JTextArea outputLog = new JTextArea();
+		outputLog.setRows(10);
+		outputLog.setEditable(false);
+		
+		JScrollPane scrollPane = new JScrollPane(outputLog);
+		centerPanel.add(scrollPane, BorderLayout.SOUTH);
+		
 		JPanel bottomPanel = new JPanel();
 		contentPane.add(bottomPanel, BorderLayout.SOUTH);
 		bottomPanel.setLayout(new BorderLayout(0, 5));
 		
 		final JProgressBar progressBar = new JProgressBar();
+		progressBar.setStringPainted(true);
 		bottomPanel.add(progressBar, BorderLayout.SOUTH);
 		
 		JButton runButton = new JButton("RUN");
@@ -121,7 +131,9 @@ public class MainFrame extends JFrame
 			{
 				if(!browsedPathField.getText().equals(""))
 				{
-					MAM mam = new MAM(progressBar);
+					MAM mam = new MAM(progressBar, outputLog);
+					
+					progressBar.setValue(0);
 					
 					switch(tabbedPane.getSelectedIndex())
 					{
@@ -137,6 +149,11 @@ public class MainFrame extends JFrame
 							mam.autoFile(browsedPathField.getText());
 							break;
 					}
+				}
+				else
+				{
+					outputLog.append("Please select your music archive first.\n");
+					System.out.println("Please select your music archive first.");
 				}
 			}
 		});

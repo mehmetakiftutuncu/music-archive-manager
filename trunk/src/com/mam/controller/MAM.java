@@ -1,6 +1,7 @@
 package com.mam.controller;
 
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 
 /**
  * General controller for the Music Archive Manager
@@ -14,9 +15,19 @@ public class MAM
 	/**	The progress bar in the main frame */
 	protected JProgressBar myProgressBar;
 	
-	public MAM(JProgressBar progressBar)
+	/** Text area for the logging in the main frame */
+	protected JTextArea myOutputLog;
+	
+	/**
+	 * Constructor for MAM
+	 * 
+	 * @param progressBar The progress bar in the main frame
+	 * @param outputLog Text area for the logging in the main frame
+	 */
+	public MAM(JProgressBar progressBar, JTextArea outputLog)
 	{
 		myProgressBar = progressBar;
+		myOutputLog = outputLog;
 	}
 
 	/**
@@ -26,7 +37,7 @@ public class MAM
 	 */
 	public void autoTag(String musicArchive)
 	{
-		new AutoTagger(musicArchive, myProgressBar).run();
+		new AutoTagger(musicArchive, myProgressBar, myOutputLog).run();
 	}
 	
 	/**
@@ -36,7 +47,7 @@ public class MAM
 	 */
 	public void autoName(String musicArchive)
 	{
-		new AutoNamer(musicArchive, myProgressBar).run();
+		new AutoNamer(musicArchive, myProgressBar, myOutputLog).run();
 	}
 	
 	/**
@@ -46,6 +57,6 @@ public class MAM
 	 */
 	public void autoFile(String musicArchive)
 	{
-		new AutoFiler(musicArchive, myProgressBar).run();
+		new AutoFiler(musicArchive, myProgressBar, myOutputLog).run();
 	}
 }
