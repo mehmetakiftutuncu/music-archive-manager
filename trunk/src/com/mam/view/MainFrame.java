@@ -23,12 +23,20 @@ import javax.swing.border.EmptyBorder;
 import com.mam.controller.MAM;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
+import javax.swing.JCheckBox;
+import javax.swing.JSplitPane;
+import javax.swing.border.TitledBorder;
+import javax.swing.UIManager;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame
 {
 	private JPanel contentPane;
 	private JTextField browsedPathField;
+	private JCheckBox autoTagOptionUppercase;
+	private JCheckBox autoTagOptionTryFileName;
+	private JTextField autoTagOptionCustomArtist;
+	private JTextField autoTagOptionCustomAlbum;
 
 	/**
 	 * Create the frame.
@@ -107,7 +115,89 @@ public class MainFrame extends JFrame
 		infoAutoTag.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JScrollPane autoTagScrollPane = new JScrollPane(infoAutoTag);
-		autoTagPanel.add(autoTagScrollPane, BorderLayout.CENTER);
+		
+		JPanel autoTagOptionsPanel = new JPanel();
+		
+		JSplitPane autoTagSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, autoTagScrollPane, autoTagOptionsPanel);
+		autoTagSplitPane.setResizeWeight(1.0);
+		GridBagLayout gbl_autoTagOptionsPanel = new GridBagLayout();
+		gbl_autoTagOptionsPanel.columnWidths = new int[]{0, 0};
+		gbl_autoTagOptionsPanel.rowHeights = new int[]{0, 0, 0, 0};
+		gbl_autoTagOptionsPanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_autoTagOptionsPanel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		autoTagOptionsPanel.setLayout(gbl_autoTagOptionsPanel);
+		
+		autoTagOptionUppercase = new JCheckBox("Convert each word to upper-case");
+		autoTagOptionUppercase.setToolTipText("If this is checked, the first letter of each word will be converted to upper-case while tagging.");
+		autoTagOptionUppercase.setSelected(true);
+		autoTagOptionUppercase.setHorizontalAlignment(SwingConstants.CENTER);
+		GridBagConstraints gbc_autoTagOptionUppercase = new GridBagConstraints();
+		gbc_autoTagOptionUppercase.insets = new Insets(0, 0, 5, 0);
+		gbc_autoTagOptionUppercase.gridx = 0;
+		gbc_autoTagOptionUppercase.gridy = 0;
+		autoTagOptionsPanel.add(autoTagOptionUppercase, gbc_autoTagOptionUppercase);
+		
+		autoTagOptionTryFileName = new JCheckBox("Try file name first");
+		autoTagOptionTryFileName.setToolTipText("If this is checked, information derived from the file name will be checked first instead of location of the file to generate tags.");
+		autoTagOptionTryFileName.setSelected(true);
+		GridBagConstraints gbc_autoTagOptionTryFileName = new GridBagConstraints();
+		gbc_autoTagOptionTryFileName.gridx = 0;
+		gbc_autoTagOptionTryFileName.gridy = 1;
+		autoTagSplitPane.setDividerLocation(0.5f);
+		autoTagOptionsPanel.add(autoTagOptionTryFileName, gbc_autoTagOptionTryFileName);
+		
+		JPanel autoTagOptionsCustomTexts = new JPanel();
+		autoTagOptionsCustomTexts.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Custom Texts For Unknown Tags", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_autoTagOptionsCustomTexts = new GridBagConstraints();
+		gbc_autoTagOptionsCustomTexts.insets = new Insets(0, 0, 5, 0);
+		gbc_autoTagOptionsCustomTexts.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoTagOptionsCustomTexts.gridx = 0;
+		gbc_autoTagOptionsCustomTexts.gridy = 2;
+		autoTagOptionsPanel.add(autoTagOptionsCustomTexts, gbc_autoTagOptionsCustomTexts);
+		GridBagLayout gbl_autoTagOptionsCustomTexts = new GridBagLayout();
+		gbl_autoTagOptionsCustomTexts.columnWidths = new int[]{0, 0, 0};
+		gbl_autoTagOptionsCustomTexts.rowHeights = new int[]{0, 0, 0};
+		gbl_autoTagOptionsCustomTexts.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_autoTagOptionsCustomTexts.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		autoTagOptionsCustomTexts.setLayout(gbl_autoTagOptionsCustomTexts);
+		
+		JLabel lblAutoTagOptionsCustomArtist = new JLabel("Artist");
+		GridBagConstraints gbc_lblAutoTagOptionsCustomArtist = new GridBagConstraints();
+		gbc_lblAutoTagOptionsCustomArtist.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAutoTagOptionsCustomArtist.anchor = GridBagConstraints.EAST;
+		gbc_lblAutoTagOptionsCustomArtist.gridx = 0;
+		gbc_lblAutoTagOptionsCustomArtist.gridy = 0;
+		autoTagOptionsCustomTexts.add(lblAutoTagOptionsCustomArtist, gbc_lblAutoTagOptionsCustomArtist);
+		
+		autoTagOptionCustomArtist = new JTextField();
+		autoTagOptionCustomArtist.setText("Unknown Artist");
+		GridBagConstraints gbc_autoTagOptionCustomArtist = new GridBagConstraints();
+		gbc_autoTagOptionCustomArtist.insets = new Insets(0, 0, 5, 0);
+		gbc_autoTagOptionCustomArtist.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoTagOptionCustomArtist.gridx = 1;
+		gbc_autoTagOptionCustomArtist.gridy = 0;
+		autoTagOptionsCustomTexts.add(autoTagOptionCustomArtist, gbc_autoTagOptionCustomArtist);
+		autoTagOptionCustomArtist.setColumns(10);
+		
+		JLabel lblAutoTagOptionsCustomAlbum = new JLabel("Album");
+		GridBagConstraints gbc_lblAutoTagOptionsCustomAlbum = new GridBagConstraints();
+		gbc_lblAutoTagOptionsCustomAlbum.anchor = GridBagConstraints.EAST;
+		gbc_lblAutoTagOptionsCustomAlbum.insets = new Insets(0, 0, 0, 5);
+		gbc_lblAutoTagOptionsCustomAlbum.gridx = 0;
+		gbc_lblAutoTagOptionsCustomAlbum.gridy = 1;
+		autoTagOptionsCustomTexts.add(lblAutoTagOptionsCustomAlbum, gbc_lblAutoTagOptionsCustomAlbum);
+		
+		autoTagOptionCustomAlbum = new JTextField();
+		autoTagOptionCustomAlbum.setText("Unknown Album");
+		GridBagConstraints gbc_autoTagOptionCustomAlbum = new GridBagConstraints();
+		gbc_autoTagOptionCustomAlbum.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoTagOptionCustomAlbum.gridx = 1;
+		gbc_autoTagOptionCustomAlbum.gridy = 1;
+		autoTagOptionsCustomTexts.add(autoTagOptionCustomAlbum, gbc_autoTagOptionCustomAlbum);
+		autoTagOptionCustomAlbum.setColumns(10);
+		
+		autoTagSplitPane.setOneTouchExpandable(true);
+		autoTagPanel.add(autoTagSplitPane, BorderLayout.CENTER);
 		
 		JPanel autoNamePanel = new JPanel();
 		tabbedPane.addTab("Auto Name", null, autoNamePanel, null);
@@ -157,7 +247,11 @@ public class MainFrame extends JFrame
 					switch(tabbedPane.getSelectedIndex())
 					{
 						case 0:
-							mam.autoTag(browsedPathField.getText());
+							mam.autoTag(browsedPathField.getText(),
+										autoTagOptionUppercase.isSelected(),
+										autoTagOptionTryFileName.isSelected(),
+										autoTagOptionCustomArtist.getText(),
+										autoTagOptionCustomAlbum.getText());
 							break;
 							
 						case 1:
