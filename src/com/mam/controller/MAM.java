@@ -33,10 +33,14 @@ public class MAM
 	 * Performs auto-tagging on the given music archive directory
 	 * 
 	 * @param musicArchive Path of the music archive directory
+	 * @param toUppercase If this is true, first letter of each word will be upper-case
+	 * @param tryFileNameFirst If this is true, information derived from file name will be checked before file location
+	 * @param customArtistName This will be written as artist tag when there is none available
+	 * @param customAlbumName This will be written as album tag when there is none available
 	 */
-	public void autoTag(String musicArchive)
+	public void autoTag(String musicArchive, boolean toUppercase, boolean tryFileNameFirst, String customArtistName, String customAlbumName)
 	{
-		new AutoTagger(musicArchive, myProgressBar, myOutputLog).run();
+		new AutoTagger(musicArchive, myProgressBar, myOutputLog, toUppercase, tryFileNameFirst, customArtistName, customAlbumName).run();
 	}
 	
 	/**

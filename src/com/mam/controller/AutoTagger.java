@@ -5,6 +5,8 @@ import java.io.File;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import com.mam.model.SongTags;
 import com.mam.model.TaggingPatterns;
 import com.mam.utilities.PatternUtils;
@@ -19,198 +21,226 @@ import com.mam.utilities.TagUtils;
  */
 public class AutoTagger extends Automizer
 {
+	private boolean toUppercase;
+	private boolean tryFileNameFirst;
+	private String customArtistName;
+	private String customAlbumName;
+	
 	/**
 	 * Instantiates an AutoTagger object
 	 * 
 	 * @param archiveDirectory The root directory of the music archive
 	 * @param progressBar The progress bar in the main frame
 	 * @param outputLog Text area for the logging in the main frame
+	 * @param toUppercase If this is true, first letter of each word will be upper-case
+	 * @param tryFileNameFirst If this is true, information derived from file name will be checked before file location
+	 * @param customArtistName This will be written as artist tag when there is none available
+	 * @param customAlbumName This will be written as album tag when there is none available
 	 */
-	public AutoTagger(String archiveDirectory, JProgressBar progressBar, JTextArea outputLog)
+	public AutoTagger(String archiveDirectory, JProgressBar progressBar, JTextArea outputLog, boolean toUppercase, boolean tryFileNameFirst, String customArtistName, String customAlbumName)
 	{
 		super(archiveDirectory, progressBar, outputLog);
+		
+		this.toUppercase = toUppercase;
+		this.tryFileNameFirst = tryFileNameFirst;
+		this.customArtistName = customArtistName;
+		this.customAlbumName = customAlbumName;
 	}
 	
+	/**
+	 * Gets the song tags to be written to the file
+	 * 
+	 * @param artist File for the current artist
+	 * @param album File for the current album
+	 * @param song File for the current artist
+	 * 
+	 * @return {@link SongTags} derived from the file location and file name, null if it was unsuccessful
+	 */
 	public SongTags getTags(File artist, File album, File song)
 	{
-		SongTags tags = new SongTags(null, null, null);
-		
-		TaggingPatterns taggingPattern = PatternUtils.getTaggingPattern(song.getName());
-		
-		if(taggingPattern == null)
+		try
 		{
-			return null;
+			SongTags tags = new SongTags(null, null, null);
+			
+			TaggingPatterns taggingPattern = PatternUtils.getTaggingPattern(song.getName());
+			
+			if(taggingPattern == null)
+			{
+				tags.setTitle(toUppercase ? WordUtils.capitalizeFully(StringUtils.getNameOrExtension(song.getName(), true).trim()) : StringUtils.getNameOrExtension(song.getName(), true).trim());
+			}
+			else
+			{
+				switch(taggingPattern)
+				{
+					case ARTIST_ALBUM_TITLE:
+						String[] tokensArtistAlbumTitle = song.getName().split("\\-");
+						tags.setTitle(toUppercase ? WordUtils.capitalizeFully(StringUtils.getNameOrExtension(tokensArtistAlbumTitle[2], true).trim()) : StringUtils.getNameOrExtension(tokensArtistAlbumTitle[2], true).trim());
+						
+						if(tryFileNameFirst)
+						{
+							tags.setArtist(toUppercase ? WordUtils.capitalizeFully(tokensArtistAlbumTitle[0].trim()) : tokensArtistAlbumTitle[0].trim());
+							tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(tokensArtistAlbumTitle[1].trim()) : tokensArtistAlbumTitle[1].trim());
+						}
+						else
+						{
+							if(artist != null)
+							{
+								tags.setArtist(toUppercase ? WordUtils.capitalizeFully(artist.getName().trim()) : artist.getName().trim());
+							}
+							if(album != null)
+							{
+								tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(album.getName().trim()) : album.getName().trim());
+							}
+						}
+						break;
+						
+					case ARTIST_TITLE:
+						String[] tokensArtistTitle = song.getName().split("\\-");
+						tags.setTitle(toUppercase ? WordUtils.capitalizeFully(StringUtils.getNameOrExtension(tokensArtistTitle[1], true).trim()) : StringUtils.getNameOrExtension(tokensArtistTitle[1], true).trim());
+						
+						if(tryFileNameFirst)
+						{
+							tags.setArtist(toUppercase ? WordUtils.capitalizeFully(tokensArtistTitle[0].trim()) : tokensArtistTitle[0].trim());
+						}
+						else
+						{
+							if(artist != null)
+							{
+								tags.setArtist(toUppercase ? WordUtils.capitalizeFully(artist.getName().trim()) : artist.getName().trim());
+							}
+						}
+						
+						if(album != null)
+						{
+							tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(album.getName().trim()) : album.getName().trim());								
+						}
+						break;
+						
+					case NUMBER_ARTIST_ALBUM_TITLE:
+						String[] tokensNumberArtistAlbumTitle = song.getName().substring(song.getName().indexOf(".") + 1).split("\\-");
+						tags.setTitle(toUppercase ? WordUtils.capitalizeFully(StringUtils.getNameOrExtension(tokensNumberArtistAlbumTitle[2], true).trim()) : StringUtils.getNameOrExtension(tokensNumberArtistAlbumTitle[2], true).trim());
+						
+						if(tryFileNameFirst)
+						{
+							tags.setArtist(toUppercase ? WordUtils.capitalizeFully(tokensNumberArtistAlbumTitle[0].trim()) : tokensNumberArtistAlbumTitle[0].trim());
+							tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(tokensNumberArtistAlbumTitle[1].trim()) : tokensNumberArtistAlbumTitle[1].trim());
+						}
+						else
+						{
+							if(artist != null)
+							{
+								tags.setArtist(toUppercase ? WordUtils.capitalizeFully(artist.getName().trim()) : artist.getName().trim());
+							}
+							if(album != null)
+							{
+								tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(album.getName().trim()) : album.getName().trim());
+							}
+						}
+						break;
+						
+					case NUMBER_ARTIST_ALBUM_TITLE2:
+						String[] tokensNumberArtistAlbumTitle2 = song.getName().split("\\-");
+						tags.setTitle(toUppercase ? WordUtils.capitalizeFully(StringUtils.getNameOrExtension(tokensNumberArtistAlbumTitle2[3], true).trim()) : StringUtils.getNameOrExtension(tokensNumberArtistAlbumTitle2[3], true).trim());
+						
+						if(tryFileNameFirst)
+						{
+							tags.setArtist(toUppercase ? WordUtils.capitalizeFully(tokensNumberArtistAlbumTitle2[1].trim()) : tokensNumberArtistAlbumTitle2[1].trim());
+							tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(tokensNumberArtistAlbumTitle2[2].trim()) : tokensNumberArtistAlbumTitle2[2].trim());
+						}
+						else
+						{
+							if(artist != null)
+							{
+								tags.setArtist(toUppercase ? WordUtils.capitalizeFully(artist.getName().trim()) : artist.getName().trim());
+							}
+							if(album != null)
+							{
+								tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(album.getName().trim()) : album.getName().trim());
+							}
+						}
+						break;
+						
+					case NUMBER_ARTIST_TITLE:
+						String[] tokensNumberArtistTitle = song.getName().substring(song.getName().indexOf(".") + 1).split("\\-");
+						tags.setTitle(toUppercase ? WordUtils.capitalizeFully(StringUtils.getNameOrExtension(tokensNumberArtistTitle[1], true).trim()) : StringUtils.getNameOrExtension(tokensNumberArtistTitle[1], true).trim());
+						
+						if(tryFileNameFirst)
+						{
+							tags.setArtist(toUppercase ? WordUtils.capitalizeFully(tokensNumberArtistTitle[0].trim()) : tokensNumberArtistTitle[0].trim());
+						}
+						else
+						{
+							if(artist != null)
+							{
+								tags.setArtist(toUppercase ? WordUtils.capitalizeFully(artist.getName().trim()) : artist.getName().trim());
+							}
+						}
+						
+						if(album != null)
+						{
+							tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(album.getName().trim()) : album.getName().trim());
+						}
+						break;
+						
+					case NUMBER_ARTIST_TITLE2:
+						String[] tokensNumberArtistTitle2 = song.getName().split("\\-");
+						tags.setTitle(toUppercase ? WordUtils.capitalizeFully(StringUtils.getNameOrExtension(tokensNumberArtistTitle2[2], true).trim()) : StringUtils.getNameOrExtension(tokensNumberArtistTitle2[2], true).trim());
+						
+						if(tryFileNameFirst)
+						{
+							tags.setArtist(toUppercase ? WordUtils.capitalizeFully(tokensNumberArtistTitle2[1].trim()) : tokensNumberArtistTitle2[1].trim());
+						}
+						else
+						{
+							if(artist != null)
+							{
+								tags.setArtist(toUppercase ? WordUtils.capitalizeFully(artist.getName().trim()) : artist.getName().trim());
+							}
+						}
+						
+						if(album != null)
+						{
+							tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(album.getName().trim()) : album.getName().trim());
+						}
+						break;
+						
+					case NUMBER_TITLE:
+						if(artist != null)
+						{
+							tags.setArtist(toUppercase ? WordUtils.capitalizeFully(artist.getName().trim()) : artist.getName().trim());
+						}
+						if(album != null)
+						{
+							tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(album.getName().trim()) : album.getName().trim());
+						}
+						
+						tags.setTitle(toUppercase ? WordUtils.capitalizeFully(StringUtils.getNameOrExtension(song.getName().substring(song.getName().indexOf(".") + 1), true).trim()) : StringUtils.getNameOrExtension(song.getName().substring(song.getName().indexOf(".") + 1), true).trim());
+						break;
+						
+					case NUMBER_TITLE2:
+						if(artist != null)
+						{
+							tags.setArtist(toUppercase ? WordUtils.capitalizeFully(artist.getName().trim()) : artist.getName().trim());
+						}
+						if(album != null)
+						{
+							tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(album.getName().trim()) : album.getName().trim());
+						}
+						
+						String[] tokensNumberTitle = song.getName().split("\\-");
+						tags.setTitle(toUppercase ? WordUtils.capitalizeFully(StringUtils.getNameOrExtension(tokensNumberTitle[1], true).trim()) : StringUtils.getNameOrExtension(tokensNumberTitle[1], true).trim());
+						break;
+				}
+			}
+			
+			return tags;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
 		}
 		
-		switch(taggingPattern)
-		{
-			case ARTIST_ALBUM_TITLE:
-				if(artist != null)
-				{
-					tags.setArtist(artist.getName().trim());
-				}
-				
-				if(album != null)
-				{
-					tags.setAlbum(album.getName().trim());
-				}
-				
-				String[] tokensArtistAlbumTitle = song.getName().split("\\-");
-				tags.setTitle(StringUtils.getNameOrExtension(tokensArtistAlbumTitle[2], true).trim());
-				
-				if(tags.getArtist() == null)
-				{
-					
-					tags.setArtist(tokensArtistAlbumTitle[0].trim());
-				}
-				
-				if(tags.getAlbum() == null)
-				{
-					tags.setAlbum(tokensArtistAlbumTitle[1].trim());
-				}
-				break;
-				
-			case ARTIST_TITLE:
-				if(artist != null)
-				{
-					tags.setArtist(artist.getName().trim());
-				}
-				
-				if(album != null)
-				{
-					tags.setAlbum(album.getName().trim());
-				}
-				
-				String[] tokensArtistTitle = song.getName().split("\\-");
-				tags.setTitle(StringUtils.getNameOrExtension(tokensArtistTitle[1], true).trim());
-				
-				if(tags.getArtist() == null)
-				{
-					tags.setArtist(tokensArtistTitle[0].trim());
-				}
-				break;
-				
-			case NUMBER_ARTIST_ALBUM_TITLE:
-				if(artist != null)
-				{
-					tags.setArtist(artist.getName().trim());
-				}
-				
-				if(album != null)
-				{
-					tags.setAlbum(album.getName().trim());
-				}
-				
-				String[] tokensNumberArtistAlbumTitle = song.getName().substring(song.getName().indexOf(".") + 1).split("\\-");
-				tags.setTitle(StringUtils.getNameOrExtension(tokensNumberArtistAlbumTitle[2], true).trim());
-				
-				if(tags.getArtist() == null)
-				{
-					tags.setArtist(tokensNumberArtistAlbumTitle[0].trim());
-				}
-				
-				if(tags.getAlbum() == null)
-				{
-					tags.setAlbum(tokensNumberArtistAlbumTitle[1].trim());
-				}
-				break;
-				
-			case NUMBER_ARTIST_ALBUM_TITLE2:
-				if(artist != null)
-				{
-					tags.setArtist(artist.getName().trim());
-				}
-				
-				if(album != null)
-				{
-					tags.setAlbum(album.getName().trim());
-				}
-				
-				String[] tokensNumberArtistAlbumTitle2 = song.getName().split("\\-");
-				tags.setTitle(StringUtils.getNameOrExtension(tokensNumberArtistAlbumTitle2[3], true).trim());
-				
-				if(tags.getArtist() == null)
-				{
-					tags.setArtist(tokensNumberArtistAlbumTitle2[1].trim());
-				}
-				
-				if(tags.getAlbum() == null)
-				{
-					tags.setAlbum(tokensNumberArtistAlbumTitle2[2].trim());
-				}
-				break;
-				
-			case NUMBER_ARTIST_TITLE:
-				if(artist != null)
-				{
-					tags.setArtist(artist.getName().trim());
-				}
-				
-				if(album != null)
-				{
-					tags.setAlbum(album.getName().trim());
-				}
-				
-				String[] tokensNumberArtistTitle = song.getName().substring(song.getName().indexOf(".") + 1).split("\\-");
-				tags.setTitle(StringUtils.getNameOrExtension(tokensNumberArtistTitle[1], true).trim());
-				
-				if(tags.getArtist() == null)
-				{
-					tags.setArtist(tokensNumberArtistTitle[0].trim());
-				}
-				break;
-				
-			case NUMBER_ARTIST_TITLE2:
-				if(artist != null)
-				{
-					tags.setArtist(artist.getName().trim());
-				}
-				
-				if(album != null)
-				{
-					tags.setAlbum(album.getName().trim());
-				}
-				
-				String[] tokensNumberArtistTitle2 = song.getName().split("\\-");
-				tags.setTitle(StringUtils.getNameOrExtension(tokensNumberArtistTitle2[2], true).trim());
-				
-				if(tags.getArtist() == null)
-				{
-					tags.setArtist(tokensNumberArtistTitle2[1].trim());
-				}
-				break;
-				
-			case NUMBER_TITLE:
-				if(artist != null)
-				{
-					tags.setArtist(artist.getName().trim());
-				}
-				
-				if(album != null)
-				{
-					tags.setAlbum(album.getName().trim());
-				}
-				
-				tags.setTitle(StringUtils.getNameOrExtension(song.getName().substring(song.getName().indexOf(".") + 1), true).trim());
-				break;
-				
-			case NUMBER_TITLE2:
-				if(artist != null)
-				{
-					tags.setArtist(artist.getName().trim());
-				}
-				
-				if(album != null)
-				{
-					tags.setAlbum(album.getName().trim());
-				}
-				
-				String[] tokensNumberTitle = song.getName().split("\\-");
-				tags.setTitle(StringUtils.getNameOrExtension(tokensNumberTitle[1], true).trim());
-				break;
-		}
-		
-		return tags;
+		return null;
 	}
 
 	@Override
@@ -230,15 +260,11 @@ public class AutoTagger extends Automizer
 		{
 			if(tags.getArtist() == null)
 			{
-				tags.setArtist("Unknown Artist");
+				tags.setArtist(toUppercase ? WordUtils.capitalizeFully(customArtistName) : customArtistName);
 			}
 			if(tags.getAlbum() == null)
 			{
-				tags.setAlbum("Untitled Album");
-			}
-			if(tags.getTitle() == null)
-			{
-				tags.setTitle("Untitled");
+				tags.setAlbum(toUppercase ? WordUtils.capitalizeFully(customAlbumName) : customAlbumName);
 			}
 			
 			log("Tags");

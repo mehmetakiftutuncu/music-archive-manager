@@ -25,6 +25,9 @@ public abstract class Automizer
 	/** Text area for the logging in the main frame */
 	protected JTextArea myOutputLog;
 	
+	/**	Start time of the operation */
+	private long startTime;
+	
 	/**
 	 * Instantiates an Automizer object
 	 * 
@@ -59,6 +62,9 @@ public abstract class Automizer
 			public void run()
 			{
 				log("===== STARTING ======");
+				log("");
+				
+				startTime = System.currentTimeMillis();
 				
 				myProgressBar.setValue(0);
 				myProgressBar.setMaximum(countFiles(new File(myArchiveDirectory)));
@@ -105,7 +111,8 @@ public abstract class Automizer
 					}
 				}
 				
-				log("===== FINISHED ======");
+				log(String.format("===== FINISHED %d items in %d milliseconds ======", myProgressBar.getMaximum(), (System.currentTimeMillis() - startTime)));
+				log("");
 				myProgressBar.setValue(0);
 			}
 		}).start();
