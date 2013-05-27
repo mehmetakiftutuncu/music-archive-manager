@@ -434,6 +434,17 @@ public class MainFrame extends JFrame
 		autoFileSplitPane.setOneTouchExpandable(true);
 		autoFilePanel.add(autoFileSplitPane, BorderLayout.CENTER);
 		
+		JPanel clearTagsPanel = new JPanel();
+		tabbedPane.addTab("Clear Tags", null, clearTagsPanel, null);
+		clearTagsPanel.setLayout(new BorderLayout(0, 0));
+
+		JLabel infoClearTags = new JLabel("<html>\r\n<p>Auto File lets you relocate your music files into organized folders based on their ID3 tags and their file names.</p>\r\n<br>\r\n<p>Auto File will assume that:\r\n<ul>\r\n<li>ID3 tags have priority over the derived information from the file name that is, if the file has ID3 tags, those will be used to locate the file first.</li>\r\n</ul><p>\r\n<br>\r\n<p>The new organization of the folders will be as following:\r\n<ul>\r\n<li>Folders, named as artist name information from ID3 tags (or derived from file name if there is no ID3 tag), inside the selected music archive</li>\r\n<li>Folders, named as album name information from ID3 tags (or considered as unknown) inside each artist folder</li>\r\n<li>Music files inside each album folder</li>\r\n<ul>\r\n</html>");
+		infoClearTags.setHorizontalAlignment(SwingConstants.CENTER);
+
+		JScrollPane clearTagsScrollPane = new JScrollPane(infoClearTags);
+
+		clearTagsPanel.add(clearTagsScrollPane, BorderLayout.CENTER);
+		
 		outputLog = new JTextArea();
 		outputLog.setRows(10);
 		outputLog.setEditable(false);
@@ -482,6 +493,10 @@ public class MainFrame extends JFrame
 											autoFileOptionGenerateAlbum.isSelected(),
 											autoFileOptionCustomArtist.getText(),
 											autoFileOptionCustomAlbum.getText());
+							break;
+						
+						case 3:
+							mam.clearTags();
 							break;
 					}
 				}
