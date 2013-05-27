@@ -3,6 +3,7 @@ package com.mam.controller;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
@@ -25,6 +26,9 @@ public abstract class Automizer
 	/** Text area for the logging in the main frame */
 	protected JTextArea myOutputLog;
 	
+	/** Run button in the main frame */
+	protected JButton myRunButton;
+	
 	/**	Start time of the operation */
 	private long startTime;
 	
@@ -34,12 +38,14 @@ public abstract class Automizer
 	 * @param archiveDirectory The root directory of the music archive
 	 * @param progressBar The progress bar in the main frame
 	 * @param outputLog Text area for the logging in the main frame
+	 * @param runButton Run button in the main frame
 	 */
-	protected Automizer(String archiveDirectory, JProgressBar progressBar, JTextArea outputLog)
+	protected Automizer(String archiveDirectory, JProgressBar progressBar, JTextArea outputLog, JButton runButton)
 	{
 		myArchiveDirectory = archiveDirectory;
 		myProgressBar = progressBar;
 		myOutputLog = outputLog;
+		myRunButton = runButton;
 	}
 	
 	/**
@@ -69,51 +75,53 @@ public abstract class Automizer
 				myProgressBar.setValue(0);
 				myProgressBar.setMaximum(countFiles(new File(myArchiveDirectory)));
 				
-				ArrayList<File> artistFolders = FileUtils.getSubDirectories(new File(myArchiveDirectory));
+				myRunButton.setEnabled(false);
 				
-				// If there are artist folders
-				if(artistFolders.size() > 0)
+				// Inside music archive root
+				ArrayList<File> foldersInRoot = FileUtils.getSubDirectories(new File(myArchiveDirectory));	// Artist folders
+				ArrayList<File> songsInRoot = FileUtils.getFilesInDirectory(new File(myArchiveDirectory));
+				
+				// For every artist
+				for(File currentArtist : foldersInRoot)
 				{
-					// For every artist
-					for(File currentArtist : artistFolders)
+					// Inside each artist folder
+					ArrayList<File> foldersInArtist = FileUtils.getSubDirectories(currentArtist);	// Album folders
+					ArrayList<File> songsInArtist = FileUtils.getFilesInDirectory(currentArtist);
+					
+					// For every album
+					for(File currentAlbum : foldersInArtist)
 					{
-						ArrayList<File> albumFolders = FileUtils.getSubDirectories(currentArtist);
+						// Gets songs in album folder
+						ArrayList<File> songsInAlbum = FileUtils.getFilesInDirectory(currentAlbum);
 						
-						// If there are album folders
-						if(albumFolders.size() > 0)
+						// For each song in album folder
+						for(File currentSong : songsInAlbum)
 						{
-							// For each album
-							for(File currentAlbum : albumFolders)
-							{
-								// For each file
-								for(File currentSong : FileUtils.getFilesInDirectory(currentAlbum))
-								{
-									process(currentArtist, currentAlbum, currentSong);
-								}
-							}
-						}
-						else
-						{
-							// For each file
-							for(File currentSong : FileUtils.getFilesInDirectory(currentArtist))
-							{
-								process(currentArtist, null, currentSong);
-							}
+							process(currentArtist, currentAlbum, currentSong);
 						}
 					}
-				}
-				else
-				{
-					// For each file
-					for(File currentSong : FileUtils.getFilesInDirectory(new File(myArchiveDirectory)))
+					
+					// For every song in artist folder
+					for(File currentSong : songsInArtist)
 					{
-						process(null, null, currentSong);
+						process(currentArtist, null, currentSong);
 					}
 				}
 				
-				log(String.format("===== FINISHED %d items in %d milliseconds ======", myProgressBar.getMaximum(), (System.currentTimeMillis() - startTime)));
-				log("");
+				// For every song in music archive root
+				for(File currentSong : songsInRoot)
+				{
+					process(null, null, currentSong);
+				}
+				
 				myProgressBar.setValue(0);
+				
+				myRunButton.setEnabled(true);
+				
+				long runTime = System.currentTimeMillis() - startTime;
+				
+				log(String.format("===== FINISHED %d items in %d minute(s) %d second(s) ======", myProgressBar.getMaximum(), runTime / 60000, runTime / 1000));
+				log("");
 			}
 		}).start();
 	}

@@ -25,20 +25,6 @@ public class FileUtilsTest
 	}
 	
 	@Test
-	public void testUpdateFileName()
-	{
-		assertNotNull(FileUtils.updateFileName(	new File("testingSet/Teoman/Gönülçelen/Teoman - Gönülçelen.mp3"),
-																new SongTags("artist", "album", "title"),
-																new File("testingSet/Teoman"),
-																new File("testingSet/Teoman/Gönülçelen")));
-		
-		assertNotNull(FileUtils.updateFileName(	new File("testingSet/Teoman/Gönülçelen/Teoman - Mavi.mp3"),
-																new SongTags(null, "album", "title"),
-																new File("testingSet/Teoman"),
-																new File("testingSet/Teoman/Gönülçelen")));
-	}
-	
-	@Test
 	public void testMoveFile()
 	{
 		assertTrue(FileUtils.moveFile(	new File("testingSet/Teoman/Gönülçelen/Teoman - Ýstasyon Ýnsanlarý.mp3"),

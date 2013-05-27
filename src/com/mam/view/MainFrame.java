@@ -32,11 +32,29 @@ import javax.swing.UIManager;
 public class MainFrame extends JFrame
 {
 	private JPanel contentPane;
+	
+	private JProgressBar progressBar;
+	private JTextArea outputLog;
+	private JButton runButton;
+	
 	private JTextField browsedPathField;
+	
 	private JCheckBox autoTagOptionUppercase;
 	private JCheckBox autoTagOptionTryFileName;
 	private JTextField autoTagOptionCustomArtist;
 	private JTextField autoTagOptionCustomAlbum;
+	private JTextField autoTagOptionCustomTitle;
+	
+	private JCheckBox autoNameOptionUppercase;
+	private JCheckBox autoNameOptionIncludeAlbum;
+	private JTextField autoNameOptionCustomArtist;
+	private JTextField autoNameOptionCustomAlbum;
+	private JTextField autoNameOptionCustomTitle;
+	
+	private JCheckBox autoFileOptionUppercase;
+	private JCheckBox autoFileOptionGenerateAlbum;
+	private JTextField autoFileOptionCustomArtist;
+	private JTextField autoFileOptionCustomAlbum;
 
 	/**
 	 * Create the frame.
@@ -128,8 +146,7 @@ public class MainFrame extends JFrame
 		autoTagOptionsPanel.setLayout(gbl_autoTagOptionsPanel);
 		
 		autoTagOptionUppercase = new JCheckBox("Convert each word to upper-case");
-		autoTagOptionUppercase.setToolTipText("If this is checked, the first letter of each word will be converted to upper-case while tagging.");
-		autoTagOptionUppercase.setSelected(true);
+		autoTagOptionUppercase.setToolTipText("If this is checked, the first letter of each word will be converted to upper-case while tagging music files.");
 		autoTagOptionUppercase.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_autoTagOptionUppercase = new GridBagConstraints();
 		gbc_autoTagOptionUppercase.insets = new Insets(0, 0, 5, 0);
@@ -181,8 +198,8 @@ public class MainFrame extends JFrame
 		
 		JLabel lblAutoTagOptionsCustomAlbum = new JLabel("Album");
 		GridBagConstraints gbc_lblAutoTagOptionsCustomAlbum = new GridBagConstraints();
+		gbc_lblAutoTagOptionsCustomAlbum.insets = new Insets(0, 0, 5, 5);
 		gbc_lblAutoTagOptionsCustomAlbum.anchor = GridBagConstraints.EAST;
-		gbc_lblAutoTagOptionsCustomAlbum.insets = new Insets(0, 0, 0, 5);
 		gbc_lblAutoTagOptionsCustomAlbum.gridx = 0;
 		gbc_lblAutoTagOptionsCustomAlbum.gridy = 1;
 		autoTagOptionsCustomTexts.add(lblAutoTagOptionsCustomAlbum, gbc_lblAutoTagOptionsCustomAlbum);
@@ -190,11 +207,29 @@ public class MainFrame extends JFrame
 		autoTagOptionCustomAlbum = new JTextField();
 		autoTagOptionCustomAlbum.setText("Unknown Album");
 		GridBagConstraints gbc_autoTagOptionCustomAlbum = new GridBagConstraints();
+		gbc_autoTagOptionCustomAlbum.insets = new Insets(0, 0, 5, 0);
 		gbc_autoTagOptionCustomAlbum.fill = GridBagConstraints.HORIZONTAL;
 		gbc_autoTagOptionCustomAlbum.gridx = 1;
 		gbc_autoTagOptionCustomAlbum.gridy = 1;
 		autoTagOptionsCustomTexts.add(autoTagOptionCustomAlbum, gbc_autoTagOptionCustomAlbum);
 		autoTagOptionCustomAlbum.setColumns(10);
+		
+		JLabel lblAutoTagOptionsCustomTitle = new JLabel("Title");
+		GridBagConstraints gbc_lblAutoTagOptionsCustomTitle = new GridBagConstraints();
+		gbc_lblAutoTagOptionsCustomTitle.anchor = GridBagConstraints.EAST;
+		gbc_lblAutoTagOptionsCustomTitle.insets = new Insets(0, 0, 0, 5);
+		gbc_lblAutoTagOptionsCustomTitle.gridx = 0;
+		gbc_lblAutoTagOptionsCustomTitle.gridy = 2;
+		autoTagOptionsCustomTexts.add(lblAutoTagOptionsCustomTitle, gbc_lblAutoTagOptionsCustomTitle);
+
+		autoTagOptionCustomTitle = new JTextField();
+		autoTagOptionCustomTitle.setText("Unknown Title");
+		GridBagConstraints gbc_autoTagOptionCustomTitle = new GridBagConstraints();
+		gbc_autoTagOptionCustomTitle.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoTagOptionCustomTitle.gridx = 1;
+		gbc_autoTagOptionCustomTitle.gridy = 2;
+		autoTagOptionsCustomTexts.add(autoTagOptionCustomTitle, gbc_autoTagOptionCustomTitle);
+		autoTagOptionCustomTitle.setColumns(10);
 		
 		autoTagSplitPane.setOneTouchExpandable(true);
 		autoTagPanel.add(autoTagSplitPane, BorderLayout.CENTER);
@@ -202,24 +237,204 @@ public class MainFrame extends JFrame
 		JPanel autoNamePanel = new JPanel();
 		tabbedPane.addTab("Auto Name", null, autoNamePanel, null);
 		autoNamePanel.setLayout(new BorderLayout(0, 0));
-		
+
 		JLabel infoAutoName = new JLabel("<html>\r\n<p>Auto Name lets you rename your music files based on their ID3 tags and where they are located.</p>\r\n<br>\r\n<p>Auto Name will assume that:\r\n<ul>\r\n<li>Folders inside the selected music archive are named as the <strong>Artist/Band Name</strong>.</li>\r\n<li>Folders inside each artist folder are named as the <strong>Album Name</strong>. If there is no folder inside the artist folder, album name will be considered as <strong>Unknown</strong>.</li>\r\n<li>ID3 tags have priority over the derived information from the file location that is, if the file has ID3 tags, those will be used to rename the file first.</li>\r\n<ul>\r\n</html>");
 		infoAutoName.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		JScrollPane autoNameScrollPane = new JScrollPane(infoAutoName);
-		autoNamePanel.add(autoNameScrollPane, BorderLayout.CENTER);
+
+		JPanel autoNameOptionsPanel = new JPanel();
+
+		JSplitPane autoNameSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, autoNameScrollPane, autoNameOptionsPanel);
+		autoNameSplitPane.setResizeWeight(1.0);
+		GridBagLayout gbl_autoNameOptionsPanel = new GridBagLayout();
+		gbl_autoNameOptionsPanel.columnWidths = new int[]{0, 0};
+		gbl_autoNameOptionsPanel.rowHeights = new int[]{0, 0, 0, 0};
+		gbl_autoNameOptionsPanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_autoNameOptionsPanel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		autoNameOptionsPanel.setLayout(gbl_autoNameOptionsPanel);
+
+		autoNameOptionUppercase = new JCheckBox("Convert each word to upper-case");
+		autoNameOptionUppercase.setToolTipText("If this is checked, the first letter of each word will be converted to upper-case while renaming music files.");
+		autoNameOptionUppercase.setHorizontalAlignment(SwingConstants.CENTER);
+		GridBagConstraints gbc_autoNameOptionUppercase = new GridBagConstraints();
+		gbc_autoNameOptionUppercase.insets = new Insets(0, 0, 5, 0);
+		gbc_autoNameOptionUppercase.gridx = 0;
+		gbc_autoNameOptionUppercase.gridy = 0;
+		autoNameOptionsPanel.add(autoNameOptionUppercase, gbc_autoNameOptionUppercase);
+
+		autoNameOptionIncludeAlbum = new JCheckBox("Include album name");
+		autoNameOptionIncludeAlbum.setToolTipText("If this is checked, album name will be added as well while renaming music files.");
+		autoNameOptionIncludeAlbum.setSelected(true);
+		GridBagConstraints gbc_autoNameOptionIncludeAlbum = new GridBagConstraints();
+		gbc_autoNameOptionIncludeAlbum.gridx = 0;
+		gbc_autoNameOptionIncludeAlbum.gridy = 1;
+		autoNameSplitPane.setDividerLocation(0.5f);
+		autoNameOptionsPanel.add(autoNameOptionIncludeAlbum, gbc_autoNameOptionIncludeAlbum);
+		
+		JPanel autoNameOptionsCustomTexts = new JPanel();
+		autoNameOptionsCustomTexts.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Custom Texts For Unknown Tags", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_autoNameOptionsCustomTexts = new GridBagConstraints();
+		gbc_autoNameOptionsCustomTexts.insets = new Insets(0, 0, 5, 0);
+		gbc_autoNameOptionsCustomTexts.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoNameOptionsCustomTexts.gridx = 0;
+		gbc_autoNameOptionsCustomTexts.gridy = 2;
+		autoNameOptionsPanel.add(autoNameOptionsCustomTexts, gbc_autoNameOptionsCustomTexts);
+		GridBagLayout gbl_autoNameOptionsCustomTexts = new GridBagLayout();
+		gbl_autoNameOptionsCustomTexts.columnWidths = new int[]{0, 0, 0};
+		gbl_autoNameOptionsCustomTexts.rowHeights = new int[]{0, 0, 0};
+		gbl_autoNameOptionsCustomTexts.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_autoNameOptionsCustomTexts.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		autoNameOptionsCustomTexts.setLayout(gbl_autoNameOptionsCustomTexts);
+
+		JLabel lblAutoNameOptionsCustomArtist = new JLabel("Artist");
+		GridBagConstraints gbc_lblAutoNameOptionsCustomArtist = new GridBagConstraints();
+		gbc_lblAutoNameOptionsCustomArtist.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAutoNameOptionsCustomArtist.anchor = GridBagConstraints.EAST;
+		gbc_lblAutoNameOptionsCustomArtist.gridx = 0;
+		gbc_lblAutoNameOptionsCustomArtist.gridy = 0;
+		autoNameOptionsCustomTexts.add(lblAutoNameOptionsCustomArtist, gbc_lblAutoNameOptionsCustomArtist);
+
+		autoNameOptionCustomArtist = new JTextField();
+		autoNameOptionCustomArtist.setText("Unknown Artist");
+		GridBagConstraints gbc_autoNameOptionCustomArtist = new GridBagConstraints();
+		gbc_autoNameOptionCustomArtist.insets = new Insets(0, 0, 5, 0);
+		gbc_autoNameOptionCustomArtist.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoNameOptionCustomArtist.gridx = 1;
+		gbc_autoNameOptionCustomArtist.gridy = 0;
+		autoNameOptionsCustomTexts.add(autoNameOptionCustomArtist, gbc_autoNameOptionCustomArtist);
+		autoNameOptionCustomArtist.setColumns(10);
+
+		JLabel lblAutoNameOptionsCustomAlbum = new JLabel("Album");
+		GridBagConstraints gbc_lblAutoNameOptionsCustomAlbum = new GridBagConstraints();
+		gbc_lblAutoNameOptionsCustomAlbum.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAutoNameOptionsCustomAlbum.anchor = GridBagConstraints.EAST;
+		gbc_lblAutoNameOptionsCustomAlbum.gridx = 0;
+		gbc_lblAutoNameOptionsCustomAlbum.gridy = 1;
+		autoNameOptionsCustomTexts.add(lblAutoNameOptionsCustomAlbum, gbc_lblAutoNameOptionsCustomAlbum);
+
+		autoNameOptionCustomAlbum = new JTextField();
+		autoNameOptionCustomAlbum.setText("Unknown Album");
+		GridBagConstraints gbc_autoNameOptionCustomAlbum = new GridBagConstraints();
+		gbc_autoNameOptionCustomAlbum.insets = new Insets(0, 0, 5, 0);
+		gbc_autoNameOptionCustomAlbum.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoNameOptionCustomAlbum.gridx = 1;
+		gbc_autoNameOptionCustomAlbum.gridy = 1;
+		autoNameOptionsCustomTexts.add(autoNameOptionCustomAlbum, gbc_autoNameOptionCustomAlbum);
+		autoNameOptionCustomAlbum.setColumns(10);
+
+		JLabel lblAutoNameOptionsCustomTitle = new JLabel("Title");
+		GridBagConstraints gbc_lblAutoNameOptionsCustomTitle = new GridBagConstraints();
+		gbc_lblAutoNameOptionsCustomTitle.insets = new Insets(0, 0, 0, 5);
+		gbc_lblAutoNameOptionsCustomTitle.anchor = GridBagConstraints.EAST;
+		gbc_lblAutoNameOptionsCustomTitle.gridx = 0;
+		gbc_lblAutoNameOptionsCustomTitle.gridy = 2;
+		autoNameOptionsCustomTexts.add(lblAutoNameOptionsCustomTitle, gbc_lblAutoNameOptionsCustomTitle);
+
+		autoNameOptionCustomTitle = new JTextField();
+		autoNameOptionCustomTitle.setText("Unknown Title");
+		GridBagConstraints gbc_autoNameOptionCustomTitle = new GridBagConstraints();
+		gbc_autoNameOptionCustomTitle.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoNameOptionCustomTitle.gridx = 1;
+		gbc_autoNameOptionCustomTitle.gridy = 2;
+		autoNameOptionsCustomTexts.add(autoNameOptionCustomTitle, gbc_autoNameOptionCustomTitle);
+		autoNameOptionCustomTitle.setColumns(10);
+
+		autoNameSplitPane.setOneTouchExpandable(true);
+		autoNamePanel.add(autoNameSplitPane, BorderLayout.CENTER);
 		
 		JPanel autoFilePanel = new JPanel();
 		tabbedPane.addTab("Auto File", null, autoFilePanel, null);
 		autoFilePanel.setLayout(new BorderLayout(0, 0));
-		
+
 		JLabel infoAutoFile = new JLabel("<html>\r\n<p>Auto File lets you relocate your music files into organized folders based on their ID3 tags and their file names.</p>\r\n<br>\r\n<p>Auto File will assume that:\r\n<ul>\r\n<li>ID3 tags have priority over the derived information from the file name that is, if the file has ID3 tags, those will be used to locate the file first.</li>\r\n</ul><p>\r\n<br>\r\n<p>The new organization of the folders will be as following:\r\n<ul>\r\n<li>Folders, named as artist name information from ID3 tags (or derived from file name if there is no ID3 tag), inside the selected music archive</li>\r\n<li>Folders, named as album name information from ID3 tags (or considered as unknown) inside each artist folder</li>\r\n<li>Music files inside each album folder</li>\r\n<ul>\r\n</html>");
 		infoAutoFile.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		JScrollPane autoFileScrollPane = new JScrollPane(infoAutoFile);
-		autoFilePanel.add(autoFileScrollPane, BorderLayout.CENTER);
+
+		JPanel autoFileOptionsPanel = new JPanel();
+
+		JSplitPane autoFileSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, autoFileScrollPane, autoFileOptionsPanel);
+		autoFileSplitPane.setResizeWeight(1.0);
+		GridBagLayout gbl_autoFileOptionsPanel = new GridBagLayout();
+		gbl_autoFileOptionsPanel.columnWidths = new int[]{0, 0};
+		gbl_autoFileOptionsPanel.rowHeights = new int[]{0, 0, 0, 0};
+		gbl_autoFileOptionsPanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_autoFileOptionsPanel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		autoFileOptionsPanel.setLayout(gbl_autoFileOptionsPanel);
+
+		autoFileOptionUppercase = new JCheckBox("Convert each word to upper-case");
+		autoFileOptionUppercase.setToolTipText("If this is checked, the first letter of each word for the folder names will be converted to upper-case while relocating music files.");
+		autoFileOptionUppercase.setHorizontalAlignment(SwingConstants.CENTER);
+		GridBagConstraints gbc_autoFileOptionUppercase = new GridBagConstraints();
+		gbc_autoFileOptionUppercase.insets = new Insets(0, 0, 5, 0);
+		gbc_autoFileOptionUppercase.gridx = 0;
+		gbc_autoFileOptionUppercase.gridy = 0;
+		autoFileOptionsPanel.add(autoFileOptionUppercase, gbc_autoFileOptionUppercase);
+
+		autoFileOptionGenerateAlbum = new JCheckBox("Generate album folder");
+		autoFileOptionGenerateAlbum.setToolTipText("If this is checked, folders for each album is going to be generated inside each artist. If not, all songs for an artist will be in the same directory.");
+		autoFileOptionGenerateAlbum.setSelected(true);
+		GridBagConstraints gbc_autoFileOptionGenerateAlbum = new GridBagConstraints();
+		gbc_autoFileOptionGenerateAlbum.gridx = 0;
+		gbc_autoFileOptionGenerateAlbum.gridy = 1;
+		autoFileSplitPane.setDividerLocation(0.5f);
+		autoFileOptionsPanel.add(autoFileOptionGenerateAlbum, gbc_autoFileOptionGenerateAlbum);
 		
-		final JTextArea outputLog = new JTextArea();
+		JPanel autoFileOptionsCustomTexts = new JPanel();
+		autoFileOptionsCustomTexts.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Custom Texts For Unknown Tags", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_autoFileOptionsCustomTexts = new GridBagConstraints();
+		gbc_autoFileOptionsCustomTexts.insets = new Insets(0, 0, 5, 0);
+		gbc_autoFileOptionsCustomTexts.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoFileOptionsCustomTexts.gridx = 0;
+		gbc_autoFileOptionsCustomTexts.gridy = 2;
+		autoFileOptionsPanel.add(autoFileOptionsCustomTexts, gbc_autoFileOptionsCustomTexts);
+		GridBagLayout gbl_autoFileOptionsCustomTexts = new GridBagLayout();
+		gbl_autoFileOptionsCustomTexts.columnWidths = new int[]{0, 0, 0};
+		gbl_autoFileOptionsCustomTexts.rowHeights = new int[]{0, 0, 0};
+		gbl_autoFileOptionsCustomTexts.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_autoFileOptionsCustomTexts.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		autoFileOptionsCustomTexts.setLayout(gbl_autoFileOptionsCustomTexts);
+
+		JLabel lblAutoFileOptionsCustomArtist = new JLabel("Artist");
+		GridBagConstraints gbc_lblAutoFileOptionsCustomArtist = new GridBagConstraints();
+		gbc_lblAutoFileOptionsCustomArtist.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAutoFileOptionsCustomArtist.anchor = GridBagConstraints.EAST;
+		gbc_lblAutoFileOptionsCustomArtist.gridx = 0;
+		gbc_lblAutoFileOptionsCustomArtist.gridy = 0;
+		autoFileOptionsCustomTexts.add(lblAutoFileOptionsCustomArtist, gbc_lblAutoFileOptionsCustomArtist);
+
+		autoFileOptionCustomArtist = new JTextField();
+		autoFileOptionCustomArtist.setText("Unknown Artist");
+		GridBagConstraints gbc_autoFileOptionCustomArtist = new GridBagConstraints();
+		gbc_autoFileOptionCustomArtist.insets = new Insets(0, 0, 5, 0);
+		gbc_autoFileOptionCustomArtist.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoFileOptionCustomArtist.gridx = 1;
+		gbc_autoFileOptionCustomArtist.gridy = 0;
+		autoFileOptionsCustomTexts.add(autoFileOptionCustomArtist, gbc_autoFileOptionCustomArtist);
+		autoFileOptionCustomArtist.setColumns(10);
+
+		JLabel lblAutoFileOptionsCustomAlbum = new JLabel("Album");
+		GridBagConstraints gbc_lblAutoFileOptionsCustomAlbum = new GridBagConstraints();
+		gbc_lblAutoFileOptionsCustomAlbum.insets = new Insets(0, 0, 0, 5);
+		gbc_lblAutoFileOptionsCustomAlbum.anchor = GridBagConstraints.EAST;
+		gbc_lblAutoFileOptionsCustomAlbum.gridx = 0;
+		gbc_lblAutoFileOptionsCustomAlbum.gridy = 1;
+		autoFileOptionsCustomTexts.add(lblAutoFileOptionsCustomAlbum, gbc_lblAutoFileOptionsCustomAlbum);
+
+		autoFileOptionCustomAlbum = new JTextField();
+		autoFileOptionCustomAlbum.setText("Unknown Album");
+		GridBagConstraints gbc_autoFileOptionCustomAlbum = new GridBagConstraints();
+		gbc_autoFileOptionCustomAlbum.fill = GridBagConstraints.HORIZONTAL;
+		gbc_autoFileOptionCustomAlbum.gridx = 1;
+		gbc_autoFileOptionCustomAlbum.gridy = 1;
+		autoFileOptionsCustomTexts.add(autoFileOptionCustomAlbum, gbc_autoFileOptionCustomAlbum);
+		autoFileOptionCustomAlbum.setColumns(10);
+
+		autoFileSplitPane.setOneTouchExpandable(true);
+		autoFilePanel.add(autoFileSplitPane, BorderLayout.CENTER);
+		
+		outputLog = new JTextArea();
 		outputLog.setRows(10);
 		outputLog.setEditable(false);
 		
@@ -230,11 +445,11 @@ public class MainFrame extends JFrame
 		contentPane.add(bottomPanel, BorderLayout.SOUTH);
 		bottomPanel.setLayout(new BorderLayout(0, 5));
 		
-		final JProgressBar progressBar = new JProgressBar();
+		progressBar = new JProgressBar();
 		progressBar.setStringPainted(true);
 		bottomPanel.add(progressBar, BorderLayout.SOUTH);
 		
-		JButton runButton = new JButton("RUN");
+		runButton = new JButton("RUN");
 		runButton.setToolTipText("Run the current process");
 		runButton.addActionListener(new ActionListener()
 		{
@@ -242,24 +457,31 @@ public class MainFrame extends JFrame
 			{
 				if(!browsedPathField.getText().equals(""))
 				{
-					MAM mam = new MAM(progressBar, outputLog);
+					MAM mam = new MAM(browsedPathField.getText(), progressBar, outputLog, runButton);
 					
 					switch(tabbedPane.getSelectedIndex())
 					{
 						case 0:
-							mam.autoTag(browsedPathField.getText(),
-										autoTagOptionUppercase.isSelected(),
+							mam.autoTag(autoTagOptionUppercase.isSelected(),
 										autoTagOptionTryFileName.isSelected(),
 										autoTagOptionCustomArtist.getText(),
-										autoTagOptionCustomAlbum.getText());
+										autoTagOptionCustomAlbum.getText(),
+										autoTagOptionCustomTitle.getText());
 							break;
 							
 						case 1:
-							mam.autoName(browsedPathField.getText());
+							mam.autoName(	autoNameOptionUppercase.isSelected(),
+											autoNameOptionIncludeAlbum.isSelected(),
+											autoNameOptionCustomArtist.getText(),
+											autoNameOptionCustomAlbum.getText(),
+											autoNameOptionCustomTitle.getText());
 							break;
 							
 						case 2:
-							mam.autoFile(browsedPathField.getText());
+							mam.autoFile(	autoFileOptionUppercase.isSelected(),
+											autoFileOptionGenerateAlbum.isSelected(),
+											autoFileOptionCustomArtist.getText(),
+											autoFileOptionCustomAlbum.getText());
 							break;
 					}
 				}
