@@ -3,8 +3,6 @@ package com.mam.utilities;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.mam.model.SongTags;
-
 /**
  * FileUtils is the utility class for handling file operations of MAM
  * 
@@ -66,45 +64,6 @@ public class FileUtils
 		}
 		
 		return files;
-	}
-	
-	/**
-	 * Updates the file name according to tags and the directory of the given file
-	 * 
-	 * @param currentArtist File object representing the artist (outer-most folder in the archive)
-	 * @param tags Tags of the current song
-	 * @param currentAlbum File object representing the album (middle folder in the archive)
-	 * @param currentSong File object representing the song (inner-most folder in the archive)
-	 * 
-	 * @return A reference to the new file, null if any error occurs
-	 */
-	public static File updateFileName(File currentSong, SongTags tags, File currentArtist, File currentAlbum)
-	{
-		String path = currentSong.getAbsolutePath();
-		int index = path.lastIndexOf(currentSong.getName());
-		path = path.substring(0, index);
-		
-		String name = "";
-		if(tags.getArtist() != null)
-		{
-			name = tags.getArtist();
-		}
-		else
-		{
-			name = currentArtist != null ? currentArtist.getName() : "";
-		}
-		name += " - " + tags.getTitle() + StringUtils.getNameOrExtension(currentSong, false);
-		
-		File newFile = new File(path + name);
-		
-		if(currentSong.renameTo(newFile))
-		{
-			return newFile;
-		}
-		else
-		{
-			return null;
-		}
 	}
 	
 	/**
