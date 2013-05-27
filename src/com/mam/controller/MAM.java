@@ -94,4 +94,12 @@ public class MAM
 						customArtistName,
 						customAlbumName).run();
 	}
+	
+	/**
+	 * Performs tag clearing on the given music archive directory
+	 */
+	public void clearTags()
+	{
+		new TagCleaner(myArchiveDirectory, myProgressBar, myOutputLog, myRunButton).run();
+	}
 }

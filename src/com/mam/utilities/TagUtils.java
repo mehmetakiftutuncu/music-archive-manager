@@ -283,4 +283,32 @@ public class TagUtils
 		
 		return null;
 	}
+	
+	/**
+	 * Clears tags of a song
+	 * 
+	 * @param song File object representing the song
+	 * 
+	 * @return true if successful, false if any error occurs
+	 */
+	public static boolean clearTags(File song)
+	{
+		try
+		{
+			MediaFile mediaFile = new MP3File(song);
+	        
+	        mediaFile.removeTags();
+	        
+	        mediaFile.sync();
+	        
+	        return true;
+		}
+		catch(Exception e)
+		{
+			System.out.println("Tags couldn't be cleared!");
+			e.printStackTrace();
+			
+			return false;
+		}
+	}
 }
