@@ -13,7 +13,6 @@ import com.mam.utilities.FileUtils;
  * 
  * @author Ezgi Hacihalil
  * @author Mehmet Akif Tutuncu
- * @author Rhahadian Bima Saputra
  */
 public abstract class Automizer
 {
@@ -59,6 +58,9 @@ public abstract class Automizer
 			@Override
 			public void run()
 			{
+				log("===== STARTING ======");
+				
+				myProgressBar.setValue(0);
 				myProgressBar.setMaximum(countFiles(new File(myArchiveDirectory)));
 				
 				ArrayList<File> artistFolders = FileUtils.getSubDirectories(new File(myArchiveDirectory));
@@ -102,6 +104,9 @@ public abstract class Automizer
 						process(null, null, currentSong);
 					}
 				}
+				
+				log("===== FINISHED ======");
+				myProgressBar.setValue(0);
 			}
 		}).start();
 	}

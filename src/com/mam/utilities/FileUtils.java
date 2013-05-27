@@ -10,7 +10,6 @@ import com.mam.model.SongTags;
  * 
  * @author Ezgi Hacihalil
  * @author Mehmet Akif Tutuncu
- * @author Rhahadian Bima Saputra
  */
 public class FileUtils
 {

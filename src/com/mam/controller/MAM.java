@@ -8,7 +8,6 @@ import javax.swing.JTextArea;
  * 
  * @author Ezgi Hacihalil
  * @author Mehmet Akif Tutuncu
- * @author Rhahadian Bima Saputra
  */
 public class MAM
 {
