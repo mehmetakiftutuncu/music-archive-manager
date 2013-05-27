@@ -5,7 +5,6 @@ package com.mam.model;
  * 
  * @author Ezgi Hacihalil
  * @author Mehmet Akif Tutuncu
- * @author Rhahadian Bima Saputra
  */
 public class SongTags
 {

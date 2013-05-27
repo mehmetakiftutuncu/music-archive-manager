@@ -7,7 +7,6 @@ import java.io.File;
  * 
  * @author Ezgi Hacihalil
  * @author Mehmet Akif Tutuncu
- * @author Rhahadian Bima Saputra
  */
 public class StringUtils
 {
@@ -97,6 +96,34 @@ public class StringUtils
 			else
 			{
 				return file.getName().substring(end, file.getName().length());
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Gets the name/extension of the file
+	 * 
+	 * @param file File name from which the name/extension is going to be read
+	 * @param isName Control flag
+	 * 
+	 * @return If isName is true, name of the file;
+	 *         if isName is false, extension of the file; null if the file doesn't have any extension
+	 */
+	public static String getNameOrExtension(String file, boolean isName)
+	{
+		if(file.contains("."))
+		{
+			int end = file.lastIndexOf(".");
+			
+			if(isName)
+			{
+				return file.substring(0, end);
+			}
+			else
+			{
+				return file.substring(end, file.length());
 			}
 		}
 		

@@ -15,7 +15,6 @@ import com.mam.utilities.TagUtils;
  * 
  * @author Ezgi Hacihalil
  * @author Mehmet Akif Tutuncu
- * @author Rhahadian Bima Saputra
  */
 public class AutoFiler extends Automizer
 {
@@ -80,17 +79,26 @@ public class AutoFiler extends Automizer
 		
 		log("===== RELOCATING FILE =====");
 		log("Before\t\t: "  + currentSong.getAbsolutePath());
-		log("Tags");
-		log("\tArtist\t: " + tags.getArtist());
-		log("\tAlbum\t: " + tags.getAlbum());
-		log("\tTitle\t: " + tags.getTitle());
 		
-		File newFile = relocateFile(currentSong, tags);
-		if(newFile != null)
+		if(tags == null)
 		{
-			log("After\t\t: "  + newFile.getAbsolutePath());
+			log("\tFile couldn't be relocated. Skipping...");
+			log("");
 		}
-		log("");
+		else
+		{
+			log("Tags");
+			log("\tArtist\t: " + tags.getArtist());
+			log("\tAlbum\t: " + tags.getAlbum());
+			log("\tTitle\t: " + tags.getTitle());
+			
+			File newFile = relocateFile(currentSong, tags);
+			if(newFile != null)
+			{
+				log("After\t\t: "  + newFile.getAbsolutePath());
+			}
+			log("");
+		}
 		
 		myProgressBar.setValue(myProgressBar.getValue() + 1);
 	}

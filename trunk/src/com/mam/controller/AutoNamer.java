@@ -14,7 +14,6 @@ import com.mam.utilities.TagUtils;
  * 
  * @author Ezgi Hacihalil
  * @author Mehmet Akif Tutuncu
- * @author Rhahadian Bima Saputra
  */
 public class AutoNamer extends Automizer
 {
@@ -37,15 +36,32 @@ public class AutoNamer extends Automizer
 		
 		log("===== UPDATING FILE NAME =====");
 		log("Before\t\t: "  + currentSong.getAbsolutePath());
-		log("Tags");
-		log("\tArtist\t: " + tags.getArtist());
-		log("\tAlbum\t: " + tags.getAlbum());
-		log("\tTitle\t: " + tags.getTitle());
 		
-		currentSong = FileUtils.updateFileName(currentSong, tags, currentArtist, currentAlbum);
-		
-		log("After\t\t: "  + currentSong.getAbsolutePath());
-		log("");
+		if(tags == null)
+		{
+			log("\tFile couldn't be renamed. Skipping...");
+			log("");
+		}
+		else
+		{
+			log("Tags");
+			log("\tArtist\t: " + tags.getArtist());
+			log("\tAlbum\t: " + tags.getAlbum());
+			log("\tTitle\t: " + tags.getTitle());
+			
+			currentSong = FileUtils.updateFileName(currentSong, tags, currentArtist, currentAlbum);
+			
+			if(currentSong == null)
+			{
+				log("\tFile couldn't be renamed. Skipping...");
+				log("");
+			}
+			else
+			{
+				log("After\t\t: "  + currentSong.getAbsolutePath());
+				log("");
+			}
+		}
 		
 		myProgressBar.setValue(myProgressBar.getValue() + 1);
 	}
