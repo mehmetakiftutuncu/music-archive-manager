@@ -120,7 +120,7 @@ public abstract class Automizer
 				
 				long runTime = System.currentTimeMillis() - startTime;
 				
-				log(String.format("===== FINISHED %d items in %d minute(s) %d second(s) ======", myProgressBar.getMaximum(), runTime / 60000, runTime / 1000));
+				log(String.format("===== FINISHED %d items in %d minute(s) %d second(s) ======", myProgressBar.getMaximum(), runTime / 60000, (runTime % 60000) / 1000));
 				log("");
 			}
 		}).start();
