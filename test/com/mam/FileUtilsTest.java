@@ -7,7 +7,6 @@ import java.io.File;
 
 import org.junit.Test;
 
-import com.mam.model.SongTags;
 import com.mam.utilities.FileUtils;
 
 public class FileUtilsTest
