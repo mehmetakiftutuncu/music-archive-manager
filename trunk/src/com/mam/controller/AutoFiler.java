@@ -61,11 +61,11 @@ public class AutoFiler extends Automizer
 		String path = myArchiveDirectory + "/";
 		
 		// Artist
-		if(readTags.getArtist() != null && !readTags.getArtist().equals(""))
+		if(readTags != null && readTags.getArtist() != null && !readTags.getArtist().equals(""))
 		{
 			path += (toUppercase ? WordUtils.capitalizeFully(readTags.getArtist()) : readTags.getArtist()) + "/";
 		}
-		else if(generatedTags.getArtist() != null)
+		else if(generatedTags != null && generatedTags.getArtist() != null)
 		{
 			path += (toUppercase ? WordUtils.capitalizeFully(generatedTags.getArtist()) : generatedTags.getArtist()) + "/";
 		}
@@ -77,11 +77,11 @@ public class AutoFiler extends Automizer
 		// Album
 		if(generateAlbum)
 		{
-			if(readTags.getAlbum() != null && !readTags.getAlbum().equals(""))
+			if(readTags != null && readTags.getAlbum() != null && !readTags.getAlbum().equals(""))
 			{
 				path += (toUppercase ? WordUtils.capitalizeFully(readTags.getAlbum()) : readTags.getAlbum()) + "/";
 			}
-			else if(generatedTags.getAlbum() != null)
+			else if(generatedTags != null && generatedTags.getAlbum() != null)
 			{
 				path += (toUppercase ? WordUtils.capitalizeFully(generatedTags.getAlbum()) : generatedTags.getAlbum()) + "/";
 			}
@@ -120,9 +120,18 @@ public class AutoFiler extends Automizer
 		else
 		{
 			log("Tags");
-			log("\tArtist\t: " + readTags.getArtist());
-			log("\tAlbum\t: " + readTags.getAlbum());
-			log("\tTitle\t: " + readTags.getTitle());
+			if(readTags != null)
+			{
+				log("\tArtist\t: " + readTags.getArtist());
+				log("\tAlbum\t: " + readTags.getAlbum());
+				log("\tTitle\t: " + readTags.getTitle());
+			}
+			else
+			{
+				log("\tArtist\t: " + generatedTags.getArtist());
+				log("\tAlbum\t: " + generatedTags.getAlbum());
+				log("\tTitle\t: " + generatedTags.getTitle());
+			}
 			
 			File newFile = relocateFile(currentSong, readTags, generatedTags);
 			if(newFile != null)
